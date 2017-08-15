@@ -1,0 +1,32 @@
+/**
+ * PhotosController
+ *
+ * @description :: Server-side logic for managing photos
+ * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
+ */
+
+module.exports = {
+	getFile: function (req, res) {
+                var query = {name: req.param('name')};
+
+                  if (req.param('version'))
+                  query = {name: req.param('fileName'), version: req.param('version')};
+
+                  File.findOne({where : query, sort: 'version DESC'}).exec(function(err, videoFile) {
+                      if (err) {     
+                          console.log("Error: " + err);
+                          res.json(err);
+                          return;
+                      }
+                      else if (videoFile) {   
+                          console.log("videoFile: " + videoFile);
+                          console.log("videoFile name: " + videoFile.name);
+
+                          res.download(videoFile.fullPath, videoFile.name);
+                      }
+                      else
+                          res.json("videoFile not found!");
+                  });
+              },
+};
+
